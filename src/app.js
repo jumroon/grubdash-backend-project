@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/dishes", dishesRouter);
+app.use("/dishes-router", dishesRouter);
 app.use("/orders", ordersRouter);
 
 app.use(notFound);
