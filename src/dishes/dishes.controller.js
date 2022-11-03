@@ -11,7 +11,6 @@ const nextId = require("../utils/nextId");
 function createDish(request, response, next) {
   const id = nextId();
   const incomingData = request.body.data;
-  console.log("HAPPY TAG XXXXXX", request.body.data);
   const newData = {
     id,
     name: incomingData.name,
@@ -23,4 +22,13 @@ function createDish(request, response, next) {
   response.status(201).json({ data: newData });
 }
 
-module.exports = { create: [createDish] };
+function doesNameExist(request, response, next) {
+  console.log("REQUEST DATA XXX", request.body.data);
+  const { name } = request.body.data;
+  if (!name) {
+    response.status(400).json({ error: "name must be defined" });
+  }
+  next();
+}
+
+module.exports = { create: [doesNameExist, createDish] };
