@@ -22,13 +22,14 @@ function createDish(request, response, next) {
   response.status(201).json({ data: newData });
 }
 
-function doesNameExist(request, response, next) {
-  console.log("REQUEST DATA XXX", request.body.data);
-  const { name } = request.body.data;
-  if (!name) {
-    response.status(400).json({ error: "name must be defined" });
+function isDataComplete(request, response, next) {
+  const { name, description, image_url } = request.body.data;
+  if (!name || !description || !image_url) {
+    response
+      .status(400)
+      .json({ error: "name, description and image_url must all be defined" });
   }
   next();
 }
 
-module.exports = { create: [doesNameExist, createDish] };
+module.exports = { create: [isDataComplete, createDish] };
