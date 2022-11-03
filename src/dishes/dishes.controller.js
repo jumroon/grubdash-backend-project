@@ -22,14 +22,14 @@ function createDish(request, response, next) {
   response.status(201).json({ data: newData });
 }
 
-function isDataComplete(request, response, next) {
-  const { name, description, image_url } = request.body.data;
-  if (!name || !description || !image_url) {
-    response
-      .status(400)
-      .json({ error: "name, description and image_url must all be defined" });
+function isDataValid(request, response, next) {
+  const { name, description, image_url, price } = request.body.data;
+  if (!name || !description || !image_url || !price || price < 0) {
+    response.status(400).json({
+      error: "name, description, price and image_url must all correct",
+    });
   }
   next();
 }
 
-module.exports = { create: [isDataComplete, createDish] };
+module.exports = { create: [isDataValid, createDish] };
