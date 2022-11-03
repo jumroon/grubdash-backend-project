@@ -32,10 +32,34 @@ function isDataValid(request, response, next) {
   next();
 }
 
-function getDishes(request, response, next) {
+function getDishes(request, response) {
   const dishId = request.params.dishId;
   const dishWeWant = dishes.find((dish) => dishId == dish.id);
   response.status(200).json({ data: dishWeWant });
 }
 
-module.exports = { create: [isDataValid, createDish], get: [getDishes] };
+function doesDishExist(request, response, next) {
+  const dishId = request.params.dishId;
+  const dishWeWant = dishes.find((dish) => dishId == dish.id);
+  if (!dishWeWant) {
+    response.status(404).json({ error: dishId });
+  }
+  next();
+}
+
+function updateDishById(request, response) {
+  const { dishId } = request.params;
+  const dishWeWant = dishes.find((dish) => dishId == dish.id);
+  const { name, description, image_url, price } = request.body.data;
+  dishWeWant.name = name;
+  dishWeWant.description = description;
+  dishWeWant.image_url = image_url;
+  dishWeWant.price = price;
+  response.status(200).json({ data: dishWeWant });
+}
+
+module.exports = {
+  create: [isDataValid, createDish],
+  get: [doesDishExist, getDishes],
+  update: [updateDishById],
+};
