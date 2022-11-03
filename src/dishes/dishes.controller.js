@@ -8,7 +8,7 @@ const nextId = require("../utils/nextId");
 
 // TODO: Implement the /dishes handlers needed to make the tests pass
 
-function createDish(request, response, next) {
+function createDish(request, response) {
   const id = nextId();
   const incomingData = request.body.data;
   const newData = {
@@ -32,4 +32,10 @@ function isDataValid(request, response, next) {
   next();
 }
 
-module.exports = { create: [isDataValid, createDish] };
+function getDishes(request, response, next) {
+  const dishId = request.params.dishId;
+  const dishWeWant = dishes.find((dish) => dishId == dish.id);
+  response.status(200).json({ data: dishWeWant });
+}
+
+module.exports = { create: [isDataValid, createDish], get: [getDishes] };
