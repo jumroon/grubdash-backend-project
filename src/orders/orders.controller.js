@@ -1,4 +1,5 @@
 const path = require("path");
+const { isArray } = require("util");
 
 // Use the existing order data
 const orders = require(path.resolve("src/data/orders-data"));
@@ -22,8 +23,37 @@ function createOrder(request, response) {
   response.status(201).json({ data: newData });
 }
 
-function validateData(request, response) {
-  const incomingData = request.body.data;
+function validateData(request, response, next) {
+  const data = request.body.data;
+  if (
+    !data.deliverTo ||
+    !data.mobileNumber ||
+    !data.dishes ||
+    data.dishes.length === 0 ||
+    !Array.isArray(data.dishes)
+  ) {
+    response
+      .status(400)
+      .json({ error: `deliverTo, mobileNumber, dishes must be valid` });
+  } else {
+    next();
+  }
 }
 
-module.exports = { post: [createOrder] };
+function validateDishQuantity(request, response, next) {
+  console.log("REQUESTXXXXXX", request.body.data.dishes);
+  const dishes = request.body.data.dishes;
+  const dishQuantities = dishes.forEach((dish) => {
+    const dishQuantity = dish.quantity;
+    if (!dishQuantity || typeof dishQuantity !== "number") {
+      response.status(400).json({
+        error: `Dish ${dishes.indexOf(
+          dish
+        )} quantity must be integer greater than 0`,
+      });
+    }
+  });
+  next();
+}
+
+module.exports = { post: [validateData, validateDishQuantity, createOrder] };
