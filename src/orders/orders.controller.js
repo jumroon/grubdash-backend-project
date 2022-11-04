@@ -59,10 +59,25 @@ function validateDishQuantity(request, response, next) {
 function getOrderById(request, response) {
   const orderId = request.params.orderId;
   const orderWeWant = orders.find((order) => orderId == order.id);
-  response.status(200).json({ data: orderWeWant });
+  if (orderWeWant) {
+    response.status(200).json({ data: orderWeWant });
+  } else {
+    response.status(404).json({ error: `order does not exist` });
+  }
+}
+
+function doesOrderExist(request, response, next) {
+  const orderId = request.params.orderId;
+  const orderWeWant = orders.find((order) => orderId == order.id);
+  if (orderWeWant) {
+    next();
+  } else {
+    response.status(404).json({ error: `order does not exist` });
+  }
 }
 
 module.exports = {
   post: [validateData, validateDishQuantity, createOrder],
   getOrders: [getOrderById],
+  put: [doesOrderExist],
 };
