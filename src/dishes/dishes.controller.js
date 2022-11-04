@@ -69,8 +69,18 @@ function validateDishIdRouter(request, response, next) {
   next();
 }
 
+function validateData(request, response, next) {
+  console.log("REQUEST PARAMS", request.params);
+  console.log("REQUEST BODY", request.body.data);
+  const data = request.body.data;
+  if (!data.name || !data.description) {
+    response.status(400).json({ error: "name, description field must exist" });
+  }
+  next();
+}
+
 module.exports = {
   create: [isDataValid, createDish],
   get: [doesDishExist, getDishes],
-  update: [doesDishExist, validateDishIdRouter, updateDishById],
+  update: [doesDishExist, validateDishIdRouter, validateData, updateDishById],
 };
