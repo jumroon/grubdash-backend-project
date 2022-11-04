@@ -126,6 +126,10 @@ function statusCannotBePending(request, response, next) {
   }
 }
 
+function getListOfOrders(request, response) {
+  response.status(200).json({ data: orders });
+}
+
 module.exports = {
   post: [validateData, validateDishQuantity, createOrder],
   getOrders: [getOrderById],
@@ -138,4 +142,5 @@ module.exports = {
     updateOrderById,
   ],
   delete: [doesOrderExist, statusCannotBePending, deleteOrder],
+  getOrderList: [getListOfOrders],
 };

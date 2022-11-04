@@ -11,6 +11,10 @@ router
   .delete(controller.delete)
   .all(methodNotAllowed);
 
-router.route("/").post(controller.post).all(methodNotAllowed);
+router
+  .route("/")
+  .post(controller.post)
+  .get(controller.getOrderList)
+  .all(methodNotAllowed);
 
 module.exports = router;
