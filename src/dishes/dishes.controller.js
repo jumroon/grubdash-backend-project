@@ -58,8 +58,19 @@ function updateDishById(request, response) {
   response.status(200).json({ data: dishWeWant });
 }
 
+function validateDishIdRouter(request, response, next) {
+  const { dishId } = request.params;
+  const requestId = request.body.data.id;
+  if (dishId === requestId) {
+    next();
+  } else {
+    response.status(400).json({ error: `invalid id: ${requestId}` });
+  }
+  next();
+}
+
 module.exports = {
   create: [isDataValid, createDish],
   get: [doesDishExist, getDishes],
-  update: [updateDishById],
+  update: [doesDishExist, validateDishIdRouter, updateDishById],
 };
