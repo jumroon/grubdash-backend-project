@@ -61,7 +61,7 @@ function updateDishById(request, response) {
 function validateDishIdRouter(request, response, next) {
   const { dishId } = request.params;
   const requestId = request.body.data.id;
-  if (dishId === requestId) {
+  if (dishId === requestId || !requestId) {
     next();
   } else {
     response.status(400).json({ error: `invalid id: ${requestId}` });
