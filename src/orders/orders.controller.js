@@ -56,4 +56,14 @@ function validateDishQuantity(request, response, next) {
   next();
 }
 
-module.exports = { post: [validateData, validateDishQuantity, createOrder] };
+function getOrderById(request, response, next) {
+  const orderId = request.params.orderId;
+  const orderWeWant = orders.find((order) => orderId == order.id);
+  response.status(200).json({ data: orderWeWant });
+  next();
+}
+
+module.exports = {
+  post: [validateData, validateDishQuantity, createOrder],
+  getOrders: [getOrderById],
+};
