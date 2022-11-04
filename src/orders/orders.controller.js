@@ -56,11 +56,10 @@ function validateDishQuantity(request, response, next) {
   next();
 }
 
-function getOrderById(request, response, next) {
+function getOrderById(request, response) {
   const orderId = request.params.orderId;
   const orderWeWant = orders.find((order) => orderId == order.id);
   response.status(200).json({ data: orderWeWant });
-  next();
 }
 
 module.exports = {
