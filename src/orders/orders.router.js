@@ -8,6 +8,7 @@ router
   .route("/:orderId")
   .get(controller.getOrders)
   .put(controller.put)
+
   .all(methodNotAllowed);
 
 router.route("/").post(controller.post).all(methodNotAllowed);

@@ -76,8 +76,34 @@ function doesOrderExist(request, response, next) {
   }
 }
 
+function updateOrderById(request, response) {
+  const { orderId } = request.params;
+  const orderWeWant = orders.find((order) => orderId == order.id);
+  const { id, deliverTo, mobileNumber, status, dishes } = request.body.data;
+  orderWeWant.id = id;
+  orderWeWant.deliverTo = deliverTo;
+  orderWeWant.mobileNumber = mobileNumber;
+  orderWeWant.status = status;
+  orderWeWant.dishes = dishes;
+  response.status(200).json({ data: orderWeWant });
+}
+
+function validateOrderIdRouter(request, response) {
+  console.log("xxxxxxxx");
+}
+
+function validateDishIdRouter(request, response, next) {
+  const { dishId } = request.params;
+  const requestId = request.body.data.id;
+  if (dishId === requestId || !requestId) {
+    next();
+  } else {
+    response.status(400).json({ error: `invalid id: ${requestId}` });
+  }
+  next();
+}
 module.exports = {
   post: [validateData, validateDishQuantity, createOrder],
   getOrders: [getOrderById],
-  put: [doesOrderExist],
+  put: [doesOrderExist, updateOrderById],
 };
