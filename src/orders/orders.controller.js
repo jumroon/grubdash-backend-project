@@ -1,6 +1,7 @@
 const { response } = require("express");
 const path = require("path");
 const { isArray } = require("util");
+const { indexOf } = require("../data/orders-data");
 
 // Use the existing order data
 const orders = require(path.resolve("src/data/orders-data"));
@@ -99,8 +100,20 @@ function validateOrderIdRouter(request, response, next) {
 }
 
 function validateStatus(request, response, next) {
-  console.log("xxxx");
+  console.log("xxxx", request.body.data);
+  const data = request.body.data;
+  if (!data.status || data.status === "invalid") {
+    response.status(400).json({ error: `status not valid` });
+  }
   next();
+}
+
+function deleteOrder(request, response) {
+  const { orderId } = request.params;
+  const orderWeWant = orders.find((order) => orderId == order.id);
+  const index = orders.indexOf(orderWeWant);
+  orders.splice(index, 1);
+  response.status(204).json({ data: orders });
 }
 
 module.exports = {
@@ -111,7 +124,8 @@ module.exports = {
     validateOrderIdRouter,
     validateData,
     validateDishQuantity,
-    updateOrderById,
     validateStatus,
+    updateOrderById,
   ],
+  delete: [deleteOrder],
 };
