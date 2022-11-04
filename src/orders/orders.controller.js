@@ -73,7 +73,7 @@ function doesOrderExist(request, response, next) {
   if (orderWeWant) {
     next();
   } else {
-    response.status(404).json({ error: `order does not exist` });
+    response.status(404).json({ error: `order not found: ${orderId}` });
   }
 }
 
@@ -100,7 +100,6 @@ function validateOrderIdRouter(request, response, next) {
 }
 
 function validateStatus(request, response, next) {
-  console.log("xxxx", request.body.data);
   const data = request.body.data;
   if (!data.status || data.status === "invalid") {
     response.status(400).json({ error: `status not valid` });
@@ -116,6 +115,17 @@ function deleteOrder(request, response) {
   response.status(204).json({ data: orders });
 }
 
+function statusCannotBePending(request, response, next) {
+  const { orderId } = request.params;
+  const orderWeWant = orders.find((order) => orderId == order.id);
+  const { status = null } = orderWeWant;
+  if (status !== "pending") {
+    response.status(400).json({ error: `only pending orders can be deleted` });
+  } else {
+    next();
+  }
+}
+
 module.exports = {
   post: [validateData, validateDishQuantity, createOrder],
   getOrders: [getOrderById],
@@ -127,5 +137,5 @@ module.exports = {
     validateStatus,
     updateOrderById,
   ],
-  delete: [deleteOrder],
+  delete: [doesOrderExist, statusCannotBePending, deleteOrder],
 };
