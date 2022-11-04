@@ -4,6 +4,6 @@ const controller = require("../orders/orders.controller.js");
 
 // TODO: Implement the /orders routes needed to make the tests pass
 
-router.route("/");
+router.route("/").post(controller.post);
 
 module.exports = router;
