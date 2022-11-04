@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/dishes-router", dishesRouter);
-app.use("/orders", ordersRouter);
+app.use("/orders-router", ordersRouter);
 
 app.use(notFound);
 

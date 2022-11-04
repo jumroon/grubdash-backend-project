@@ -8,7 +8,11 @@ router
   .put(controller.update)
   .all(methodNotAllowed);
 
-router.route("/").post(controller.create).all(methodNotAllowed);
+router
+  .route("/")
+  .post(controller.create)
+  .get(controller.getDishes)
+  .all(methodNotAllowed);
 
 // TODO: Implement the /dishes routes needed to make the tests pass
 

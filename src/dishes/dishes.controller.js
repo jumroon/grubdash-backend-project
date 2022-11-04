@@ -32,7 +32,7 @@ function isDataValid(request, response, next) {
   next();
 }
 
-function getDishes(request, response) {
+function getDish(request, response) {
   const dishId = request.params.dishId;
   const dishWeWant = dishes.find((dish) => dishId == dish.id);
   response.status(200).json({ data: dishWeWant });
@@ -70,17 +70,32 @@ function validateDishIdRouter(request, response, next) {
 }
 
 function validateData(request, response, next) {
-  console.log("REQUEST PARAMS", request.params);
-  console.log("REQUEST BODY", request.body.data);
   const data = request.body.data;
-  if (!data.name || !data.description) {
-    response.status(400).json({ error: "name, description field must exist" });
+  console.log("REQUEST BODY DATA: ", request.body.data);
+  console.log("REQUEST BODY PRICE: ", typeof data.price !== "number");
+  if (
+    !data.name ||
+    !data.description ||
+    !data.image_url ||
+    !data.price ||
+    typeof data.price !== "number" ||
+    data.price < 0
+  ) {
+    response.status(400).json({
+      error:
+        "name, description, image_url, price field must exist and be valid",
+    });
   }
   next();
 }
 
+function getListOfDishes(request, response) {
+  response.status(200).json({ data: dishes });
+}
+
 module.exports = {
   create: [isDataValid, createDish],
-  get: [doesDishExist, getDishes],
+  get: [doesDishExist, getDish],
   update: [doesDishExist, validateDishIdRouter, validateData, updateDishById],
+  getDishes: [getListOfDishes],
 };
