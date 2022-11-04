@@ -1,3 +1,4 @@
+const { response } = require("express");
 const path = require("path");
 const { isArray } = require("util");
 
@@ -41,7 +42,6 @@ function validateData(request, response, next) {
 }
 
 function validateDishQuantity(request, response, next) {
-  console.log("REQUESTXXXXXX", request.body.data.dishes);
   const dishes = request.body.data.dishes;
   const dishQuantities = dishes.forEach((dish) => {
     const dishQuantity = dish.quantity;
@@ -80,7 +80,7 @@ function updateOrderById(request, response) {
   const { orderId } = request.params;
   const orderWeWant = orders.find((order) => orderId == order.id);
   const { id, deliverTo, mobileNumber, status, dishes } = request.body.data;
-  orderWeWant.id = id;
+  // orderWeWant.id = id;
   orderWeWant.deliverTo = deliverTo;
   orderWeWant.mobileNumber = mobileNumber;
   orderWeWant.status = status;
@@ -88,22 +88,30 @@ function updateOrderById(request, response) {
   response.status(200).json({ data: orderWeWant });
 }
 
-function validateOrderIdRouter(request, response) {
-  console.log("xxxxxxxx");
-}
-
-function validateDishIdRouter(request, response, next) {
-  const { dishId } = request.params;
+function validateOrderIdRouter(request, response, next) {
+  const { orderId } = request.params;
   const requestId = request.body.data.id;
-  if (dishId === requestId || !requestId) {
+  if (orderId === requestId || !requestId) {
     next();
   } else {
-    response.status(400).json({ error: `invalid id: ${requestId}` });
+    response.status(400).json({ error: `request id ${requestId} invalid` });
   }
+}
+
+function validateStatus(request, response, next) {
+  console.log("xxxx");
   next();
 }
+
 module.exports = {
   post: [validateData, validateDishQuantity, createOrder],
   getOrders: [getOrderById],
-  put: [doesOrderExist, updateOrderById],
+  put: [
+    doesOrderExist,
+    validateOrderIdRouter,
+    validateData,
+    validateDishQuantity,
+    updateOrderById,
+    validateStatus,
+  ],
 };
