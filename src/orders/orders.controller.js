@@ -71,6 +71,8 @@ function doesOrderExist(request, response, next) {
   const orderId = request.params.orderId;
   const orderWeWant = orders.find((order) => orderId == order.id);
   if (orderWeWant) {
+    response.locals.orderId = orderId;
+    response.locals.order = orderWeWant;
     next();
   } else {
     response.status(404).json({ error: `order not found: ${orderId}` });
@@ -78,21 +80,17 @@ function doesOrderExist(request, response, next) {
 }
 
 function updateOrderById(request, response) {
-  const { orderId } = request.params;
-  const orderWeWant = orders.find((order) => orderId == order.id);
   const { id, deliverTo, mobileNumber, status, dishes } = request.body.data;
-  // orderWeWant.id = id;
-  orderWeWant.deliverTo = deliverTo;
-  orderWeWant.mobileNumber = mobileNumber;
-  orderWeWant.status = status;
-  orderWeWant.dishes = dishes;
-  response.status(200).json({ data: orderWeWant });
+  response.locals.order.deliverTo = deliverTo;
+  response.locals.order.mobileNumber = mobileNumber;
+  response.locals.order.status = status;
+  response.locals.order.dishes = dishes;
+  response.status(200).json({ data: response.locals.order });
 }
 
 function validateOrderIdRouter(request, response, next) {
-  const { orderId } = request.params;
   const requestId = request.body.data.id;
-  if (orderId === requestId || !requestId) {
+  if (response.locals.orderId === requestId || !requestId) {
     next();
   } else {
     response.status(400).json({ error: `request id ${requestId} invalid` });
