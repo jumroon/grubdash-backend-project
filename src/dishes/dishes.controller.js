@@ -71,8 +71,7 @@ function validateDishIdRouter(request, response, next) {
 
 function validateData(request, response, next) {
   const data = request.body.data;
-  console.log("REQUEST BODY DATA: ", request.body.data);
-  console.log("REQUEST BODY PRICE: ", typeof data.price !== "number");
+
   if (
     !data.name ||
     !data.description ||

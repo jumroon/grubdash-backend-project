@@ -1,7 +1,4 @@
-const { response } = require("express");
 const path = require("path");
-const { isArray } = require("util");
-const { indexOf } = require("../data/orders-data");
 
 // Use the existing order data
 const orders = require(path.resolve("src/data/orders-data"));
@@ -45,13 +42,11 @@ function validateData(request, response, next) {
 
 function validateDishQuantity(request, response, next) {
   const dishes = response.locals.data.dishes;
-  const dishQuantities = dishes.forEach((dish) => {
+  dishes.forEach((dish, index) => {
     const dishQuantity = dish.quantity;
     if (!dishQuantity || typeof dishQuantity !== "number") {
       response.status(400).json({
-        error: `Dish ${dishes.indexOf(
-          dish
-        )} quantity must be integer greater than 0`,
+        error: `Dish ${index} quantity must be integer greater than 0`,
       });
     }
   });
@@ -89,7 +84,7 @@ function updateOrderById(request, response) {
   response.status(200).json({ data: response.locals.order });
 }
 
-function validateOrderIdRouter(request, response, next) {
+function validateOrderId(request, response, next) {
   const requestId = request.body.data.id;
   if (response.locals.orderId === requestId || !requestId) {
     next();
@@ -134,7 +129,7 @@ module.exports = {
   getOrders: [getOrderById],
   put: [
     doesOrderExist,
-    validateOrderIdRouter,
+    validateOrderId,
     validateData,
     validateDishQuantity,
     validateStatus,
