@@ -99,8 +99,10 @@ function validateOrderIdRouter(request, response, next) {
 }
 
 function validateStatus(request, response, next) {
-  const data = request.body.data;
-  if (!data.status || data.status === "invalid") {
+  if (
+    !response.locals.data.status ||
+    response.locals.data.status === "invalid"
+  ) {
     response.status(400).json({ error: `status not valid` });
   }
   next();
