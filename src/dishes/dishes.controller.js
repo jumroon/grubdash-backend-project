@@ -34,8 +34,7 @@ function isDataValid(request, response, next) {
 
 function getDish(request, response) {
   const dishId = request.params.dishId;
-  const dishWeWant = dishes.find((dish) => dishId == dish.id);
-  response.status(200).json({ data: dishWeWant });
+  response.status(200).json({ data: response.locals.dish });
 }
 
 function doesDishExist(request, response, next) {
@@ -44,6 +43,7 @@ function doesDishExist(request, response, next) {
   if (!dishWeWant) {
     response.status(404).json({ error: dishId });
   }
+  response.locals.dish = dishWeWant;
   next();
 }
 

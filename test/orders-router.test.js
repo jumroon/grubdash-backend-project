@@ -30,7 +30,7 @@ describe("orders router", () => {
   });
 
   describe("create method", () => {
-    test.only("creates a new order and assigns id", async () => {
+    test("creates a new order and assigns id", async () => {
       const expectedDeliverTo = "creates a new order and assigns id";
       const response = await request(app)
         .post(ATTACHED_PATH)
