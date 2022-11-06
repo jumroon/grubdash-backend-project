@@ -38,12 +38,13 @@ function validateData(request, response, next) {
       .status(400)
       .json({ error: `deliverTo, mobileNumber, dishes must be valid` });
   } else {
+    response.locals.data = data;
     next();
   }
 }
 
 function validateDishQuantity(request, response, next) {
-  const dishes = request.body.data.dishes;
+  const dishes = response.locals.data.dishes;
   const dishQuantities = dishes.forEach((dish) => {
     const dishQuantity = dish.quantity;
     if (!dishQuantity || typeof dishQuantity !== "number") {
