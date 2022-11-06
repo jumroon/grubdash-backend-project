@@ -117,9 +117,7 @@ function deleteOrder(request, response) {
 }
 
 function statusCannotBePending(request, response, next) {
-  const { orderId } = request.params;
-  const orderWeWant = orders.find((order) => orderId == order.id);
-  const { status = null } = orderWeWant;
+  const { status = null } = response.locals.order;
   if (status !== "pending") {
     response.status(400).json({ error: `only pending orders can be deleted` });
   } else {
